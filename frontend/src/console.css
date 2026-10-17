@@ -1,0 +1,40 @@
+/* 房东后台与平台管理共用的表单、表格、按钮。沿用站点的纸张/墨线/荧光色变量。 */
+.console { display: grid; gap: 18px; }
+.c-card { padding: 18px; border: 1.5px solid var(--rule-strong); border-radius: 14px; background: var(--paper-raised); box-shadow: 3px 3px 0 var(--shadow-hard); }
+.c-card > h2, .c-section-title { margin-bottom: 12px; font-size: 18px; font-weight: 900; }
+.c-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.c-toolbar__spacer { flex: 1; }
+.c-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border: 1.5px solid var(--rule-strong); border-radius: 9px; background: var(--paper-raised); color: var(--ink); font-size: 14px; font-weight: 800; white-space: nowrap; cursor: pointer; text-decoration: none; }
+.c-btn:hover:not(:disabled) { background: var(--paper-muted); }
+.c-btn:disabled { opacity: .55; cursor: not-allowed; }
+.c-btn--primary { background: var(--acid); color: var(--acid-ink); box-shadow: 2px 2px 0 var(--shadow-hard); }
+.c-btn--primary:hover:not(:disabled) { background: var(--acid-strong); }
+.c-btn--danger { color: var(--danger, #c0392b); }
+.c-btn--sm { height: 30px; padding: 0 10px; font-size: 13px; }
+.c-input, .c-select, .c-textarea { width: 100%; min-height: 38px; padding: 7px 10px; border: 1.5px solid var(--rule-strong); border-radius: 8px; background: var(--paper); color: var(--ink); font: inherit; font-size: 14px; }
+.c-textarea { resize: vertical; }
+.c-input:focus, .c-select:focus, .c-textarea:focus { outline: 2px solid var(--acid-strong); outline-offset: 1px; }
+.c-field { display: grid; align-content: start; gap: 5px; color: var(--ink-secondary); font-size: 13px; font-weight: 700; }
+.c-field--wide { grid-column: 1 / -1; }
+.c-form-grid { display: grid; align-content: start; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.c-hint { color: var(--ink-muted); font-size: 12px; font-weight: 500; }
+.c-error { color: var(--danger, #c0392b); font-size: 13px; }
+.c-table-wrap { overflow-x: auto; border: 1.5px solid var(--rule-strong); border-radius: 12px; background: var(--paper-raised); }
+.c-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.c-table th, .c-table td { padding: 10px 12px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: middle; }
+.c-table th { background: var(--paper-muted); color: var(--ink-secondary); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.c-table tr:last-child td { border-bottom: 0; }
+.c-table td.c-actions { white-space: nowrap; text-align: right; }
+.c-table td.c-actions .c-btn + .c-btn { margin-left: 6px; }
+.c-badge { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border: 1px solid var(--rule-strong); border-radius: 999px; background: var(--paper); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.c-badge[data-tone='good'] { background: var(--acid); color: var(--acid-ink); }
+.c-badge[data-tone='warn'] { background: #ffe1a8; color: #3a2600; }
+.c-badge[data-tone='muted'] { color: var(--ink-muted); border-color: var(--rule); }
+.c-badge[data-tone='bad'] { background: #ffd2cc; color: #4a0d05; }
+.c-empty { padding: 36px 16px; border: 1.5px dashed var(--rule-strong); border-radius: 12px; color: var(--ink-secondary); text-align: center; }
+.c-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+.c-stat { display: grid; gap: 4px; padding: 16px; border: 1.5px solid var(--rule-strong); border-radius: 14px; background: var(--paper-raised); box-shadow: 3px 3px 0 var(--shadow-hard); color: inherit; text-decoration: none; }
+.c-stat strong { font-size: 30px; font-weight: 900; line-height: 1.1; }
+.c-stat span { color: var(--ink-secondary); font-size: 13px; font-weight: 700; }
+.c-pager { display: flex; align-items: center; justify-content: flex-end; gap: 10px; color: var(--ink-secondary); font-size: 13px; }
+.c-thumb { width: 64px; height: 44px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper-muted) center / cover no-repeat; }

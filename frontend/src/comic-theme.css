@@ -1,0 +1,391 @@
+.comic-masthead-rule,.comic-footer-rule,.comic-speech-outline,.comic-masthead-creation,.comic-masthead-corner,.comic-footer-sticker { display:none; }
+/* Shared comic palette; component-specific geometry remains with its owner. */
+:root {
+  --paper: #fffef9;
+  --paper-raised: #fffefa;
+  --paper-muted: #f1f3f6;
+  --ink: #071735;
+  --ink-secondary: #35527b;
+  --ink-muted: #537098;
+  --muted: var(--ink-muted);
+  --rule: #c9d2df;
+  --rule-strong: #142345;
+  --acid: #c5ff32;
+  --acid-soft: #f0fbd9;
+  --acid-strong: #b3ed20;
+  --acid-ink: #071735;
+  --dock-surface: #fffefa;
+  --dock-edge: #586b85;
+  --dock-text: #11264a;
+  --dock-hover: #edf7da;
+  --comic-cyan: #cdefff;
+  --comic-dots: #1423451a;
+  --comic-shadow: #142345;
+  --comic-cyan-line: #34c6e9;
+  --comic-cyan-dot: #147d9d;
+  --integration-mcp: #65c9f5;
+  --integration-dsh: #a190f6;
+  --integration-dsh-ink: #7441d4;
+  --live-dot: #31a854;
+  --live-dot-halo: #31a85425;
+  --dock-account-ink: #15643d;
+  --metric-github: #67ef85;
+  --metric-total-ink: #087b94;
+  --metric-github-ink: #25803b;
+  --metric-ui: #ffd591;
+  --metric-ui-ink: #c44d18;
+  --metric-new: #6bd4ff;
+  --metric-new-ink: #087b69;
+  --metric-visitors: #b0a0ff;
+  --metric-visitors-ink: #693de8;
+  --metric-total-visitors-ink: #1d67ca;
+  --sticker-ink: #071735;
+  --sticker-peel: #f4f8e8;
+  --sticker-tape: #fffef9c4;
+  --sticker-accent: #071735;
+}
+
+:root[data-theme='dark'] {
+  --paper: #202124;
+  --paper-raised: #292a2d;
+  --paper-muted: #323337;
+  --ink: #e8e9ec;
+  --ink-secondary: #d6d9de;
+  --ink-muted: #b9bec6;
+  --rule: #45464b;
+  --rule-strong: #45464b;
+  --acid: #b4d956;
+  --acid-soft: #343e27;
+  --acid-strong: #c2e66b;
+  --acid-ink: #202124;
+  --dock-surface: #323337;
+  --dock-edge: #45464b;
+  --dock-text: #d6d9de;
+  --dock-hover: #414638;
+  --comic-cyan: #2c414b;
+  --comic-dots: #b9bec605;
+  --comic-shadow: #111214;
+  --comic-cyan-line: #2b8aa3;
+  --comic-cyan-dot: #6cc3d9;
+  --integration-mcp: #65c9f5;
+  --integration-dsh: #a190f6;
+  --integration-dsh-ink: #c4b5ff;
+  --live-dot: #31a854;
+  --live-dot-halo: #31a85425;
+  --dock-account-ink: #94ca8b;
+  --metric-total-ink: #72d5ea;
+  --metric-github-ink: #7de59a;
+  --metric-new-ink: #66d9ba;
+  --metric-visitors-ink: #c1adff;
+  --metric-total-visitors-ink: #83b9ff;
+  --metric-ui-ink: #ffb078;
+  --card-rgb: 41 42 45;
+  --danger: #ef826b;
+  --sticker-ink: #17181b;
+  --sticker-peel: #d9dfcc;
+  --sticker-tape: #e8e9ec38;
+  --sticker-accent: var(--acid);
+}
+:root[data-theme='dark'] #app .app-shell--editorial .brand-comic { filter:none; }
+
+:root[data-theme='dark'] #app .app-shell--editorial .app-masthead .masthead-user::before { background:var(--paper-raised); }
+
+#app .app-shell { letter-spacing: 0; }
+#app .app-shell--editorial .dashboard-heading h1 { -webkit-text-stroke:.65px currentColor; }
+#app .app-shell--editorial .digest-heading h2 { -webkit-text-stroke:.25px currentColor; }
+#app .app-shell--editorial {
+  background: var(--paper);
+}
+@media (min-width: 1024px) {
+#app .app-shell--editorial .brand-wordmark__text { font-size: 94px; }
+
+@media (min-width: 1024px) {
+  /* One dock width on every page (the comic pages' concept), so it holds still as the dock switches pages. */
+  #app .app-shell { --home-dock-width: min(860px, 61vw); }
+  /* Wrapped footer copy grows upward; leave the same space below the content, including both 3px gutters. */
+  #app .app-shell--editorial { --shell-foot: max(74px, calc(var(--footer-height, 68px) + 6px)); }
+  #app .app-shell--editorial .main-canvas.main-canvas--editorial { height: calc(100dvh / var(--shell-zoom, 1) - var(--shell-foot, 74px)); }
+  #app .app-shell--editorial .main-canvas--editorial > .app-content { padding: 110px 12px 0; }
+  #app .app-shell--editorial .main-canvas--editorial .app-masthead {
+    height: 110px;
+    padding: 0 24px;
+    grid-template-columns: minmax(220px,1fr) auto minmax(200px,1fr);
+    gap: 16px;
+    border-bottom: 0 !important;
+    background: var(--paper) !important;
+    isolation: isolate;
+  }
+  /* The rule runs high on the left, where the corner's ribbon crosses it, and steps down to the masthead's foot. */
+  #app .app-shell--editorial .comic-masthead-rule { display:block;position:absolute;left:0;bottom:-1px;width:100%;height:24px;overflow:visible;pointer-events:none; }
+  #app .app-shell--editorial .brand-comic { height:86px; }
+  #app .app-shell--editorial .comic-masthead-rule path { fill:none;stroke:var(--rule-strong);stroke-width:3;vector-effect:non-scaling-stroke; }
+  #app .app-shell--editorial .comic-speech-outline { display:block;position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible; }
+  #app .app-shell--editorial .comic-speech-outline path { fill:var(--paper-raised);stroke:var(--ink);stroke-width:2.5;vector-effect:non-scaling-stroke;stroke-linejoin:miter; }
+  #app .app-shell--editorial .app-masthead::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(circle, var(--comic-shadow) 1.05px, transparent 1.6px) 0 0 / 7px 7px,
+      radial-gradient(circle, var(--comic-cyan-line) 1.6px, transparent 2px) 3px 3px / 7px 7px;
+    mask-image: radial-gradient(ellipse 170px 83px at 29% -8%, #000 12%, transparent 92%);
+    opacity:.78;
+  }
+  :root[data-theme='dark'] #app .app-shell--editorial .app-masthead::before { opacity:.035; }
+  #app .app-shell--editorial::before {
+    content:'';position:absolute;left:0;right:0;bottom:0;height:85px;pointer-events:none;
+    background:radial-gradient(circle,var(--comic-cyan-line) 1.2px,transparent 1.7px) 0 0 / 6px 6px;
+    mask-image:radial-gradient(ellipse 135px 40px at 0 110%,#000 25%,transparent 100%),radial-gradient(ellipse 100px 75px at 79% 0%,#000 0%,transparent 100%);
+  }
+  :root[data-theme='dark'] #app .app-shell--editorial::before { display:none; }
+  #app .app-shell--editorial .app-masthead::after {
+    content:'';position:absolute;left:20%;top:0;width:11%;height:60px;z-index:-1;pointer-events:none;
+    background:repeating-linear-gradient(132deg,transparent 0 18px,color-mix(in srgb,var(--comic-cyan-line) 26%,transparent) 19px 20px,transparent 21px 33px);
+    mask-image:linear-gradient(140deg,#000,transparent 70%);
+  }
+  :root[data-theme='dark'] #app .app-shell--editorial .app-masthead::after { display:none;
+  }
+  #app .app-shell--editorial .masthead-meta { margin-left: 215px; font-size: 14px; line-height: 1.5; overflow: visible !important; }
+  #app .app-shell--editorial .masthead-meta__today::after {
+    content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--live-dot);
+    box-shadow: 0 0 0 3px var(--live-dot-halo); align-self: center; margin-left: 5px;
+  }
+  #app .app-shell--editorial .app-masthead__tools {
+    display: grid; grid-template-columns: auto 290px; grid-template-rows: 57px 38px;
+    column-gap: 24px; row-gap: 0; align-items: center;
+  }
+  #app .app-shell--editorial .brand-wordmark { grid-column: 1; grid-row: 1 / 3; }
+  #app .app-shell--editorial .masthead-tagline {
+    display: flex; align-items:center; justify-content:center; grid-column: 2; grid-row: 1; margin: 4px 0 0; padding: 4px 20px 12px; height:56px; box-sizing:border-box;
+    position:relative;isolation:isolate;border:0;color:var(--ink);font-size:21px;font-style:italic;font-weight:900;
+    transform:rotate(-4deg);text-align:center;white-space:nowrap;line-height:1.25;
+  }
+  #app .app-shell--editorial .app-masthead__actions { grid-column: 2; grid-row: 2; justify-content: flex-end; gap: 9px; }
+  #app .app-shell--editorial .app-masthead .masthead-user { justify-self: end; width: 150px; z-index: 1; }
+  #app .app-shell--editorial .app-masthead .masthead-user { width:154px;max-width:154px;gap:11px;padding:9px 0 9px 16px;border-left:1px solid var(--rule);font-size:12px; }
+  #app .app-shell--editorial .app-masthead .masthead-user::before { display:none; }
+  #app .app-shell--editorial .masthead-user .user-avatar { width:39px;height:39px;background:color-mix(in srgb,var(--comic-cyan) 55%,var(--paper));border-color:var(--ink-secondary);box-shadow:2px 2px 0 color-mix(in srgb,var(--comic-cyan) 70%,transparent); }
+  #app .app-shell--editorial .masthead-user__status { font-size:13px;letter-spacing:.01em; }
+  #app .app-shell--editorial .masthead-user__identity { font-size:11px;letter-spacing:0; }
+  #app .app-shell--editorial .dock { bottom: 10px; padding: 4px 12px; border-radius: 14px; box-shadow: none; }
+  #app .app-shell--editorial .dock-item { height: 52px; border-radius: 7px; }
+  #app .app-shell--editorial .dock::before { border-radius: 7px; }
+  #app .app-shell--editorial .dock-label { font-size: 12px; line-height: 16px; }
+  #app .app-shell--editorial .dock-auth-sep { display: block; width: 1px; height: 32px; margin: 0 10px; background: var(--dock-edge); }
+  #app .app-shell--editorial .dock-footer--editorial { bottom: 3px; min-height: 68px; left: 24px; right: 24px; }
+  #app .app-shell--editorial .footer-wordmark { letter-spacing: 0; }
+  #app .app-shell--editorial .footer-nav { font-size: 12px; }
+  @media (max-width: 1199px) {
+    #app .app-shell--editorial .footer-nav { font-size: 10px; }
+  }
+  @media (max-width: 1599px) {
+    :root:lang(en) #app .app-shell--editorial .footer-nav { font-size: 10px; gap: 4px; }
+  }
+  /* The page's frame closes on the footer's top edge in the masthead rule's ink. The content ends on that edge, so
+     a line cut there reads as running on past the panel's border rather than breaking off. Over the dock the rule lifts
+     into a bay of paper that keeps the dock's top clear, as the masthead's steps round its ribbon; on the right it runs
+     on beneath the peel's curl. */
+  #app .app-shell--editorial .comic-footer-rule {
+    display: flex; position: absolute; left: 0; right: 0; bottom: 0; z-index: 99; height: 13px; pointer-events: none;
+  }
+  #app .app-shell--editorial .comic-footer-rule svg { display: block; height: 100%; overflow: visible; }
+  #app .app-shell--editorial .comic-footer-rule__run { flex: 1 1 0; min-width: 0; margin-inline: -1px; }
+  #app .app-shell--editorial .comic-footer-rule__step { flex: none; width: 26px; }
+  #app .app-shell--editorial .comic-footer-rule__bay { flex: none; width: calc(var(--home-dock-width) + 8px); margin-inline: -1px; }
+  #app .app-shell--editorial .comic-footer-rule path {
+    fill: none; stroke: var(--rule-strong); stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke;
+  }
+  #app .app-shell--editorial .comic-footer-rule .comic-footer-rule__paper { fill: var(--paper); stroke: none; }
+}
+
+/* Comic stickers (ComicSticker.vue): transparent layers lifted from the concept images, over the page. The
+   theme decides where each may appear and how big its box is; every box keeps its image's aspect ratio.
+   Every page draws them at the content pages' concept size (corner 250px, shout 330px, peel 400px). */
+@media (min-width: 1280px) {
+  /* The shout is a hole torn from the masthead's top edge, a grid item in the third column beside the
+     account menu; both reserve the same account width so the art cannot overlap the avatar. */
+  #app .app-shell--editorial .app-masthead .comic-masthead-creation {
+    display:block;position:relative;grid-column:3;grid-row:1;justify-self:end;align-self:start;
+    width:min(calc(100% - var(--masthead-account-width)),330px);aspect-ratio:1101/324;margin:0 var(--masthead-account-width) 0 0;
+  }
+}
+@media (min-width: 1500px) {
+  /* The torn top-left corner: its ribbon crosses the rule, left of the date line and clear of the
+     dashboard heading below. */
+  #app .app-shell--editorial .comic-masthead-corner { display:block;position:absolute;left:0;top:0;width:250px;aspect-ratio:852/345;z-index:6; }
+}
+/* The bottom-right peel: the page's corner curling up off lime, on the viewport's corner over the UI card
+   and the footer. --peel is its width: the concept's size (400px), or less where the dock (the curl's tail
+   runs along the bottom and must stay right of it) or the height (its crest must stay under the card's
+   heading row; card top = 668px) runs out. The footer links move beside the brand to give it the footer's
+   right column. */
+@media (min-width: 1600px) and (min-height: 800px) {
+  #app .app-shell--editorial {
+    --peel:min(400px,calc((100vw / var(--shell-zoom, 1) - var(--home-dock-width) - 26px) * .56),calc(100dvh / var(--shell-zoom, 1) * 2 - 1350px));
+  }
+  #app .app-shell--editorial .comic-footer-sticker { display:block;position:absolute;right:-24px;bottom:-3px;width:var(--peel);aspect-ratio:1100/713; }
+  #app .app-shell--editorial .dock-footer--editorial {
+    grid-template-columns:max-content minmax(0,1fr) var(--home-dock-width) calc((100% - var(--home-dock-width)) / 2 - 16px);
+  }
+  #app .app-shell--editorial .dock-footer--editorial .footer-right { grid-column:2;justify-self:start;align-items:flex-start;margin-left:24px; }
+  #app .app-shell--editorial .dock-footer--editorial .footer-nav { justify-content:flex-start; }
+  #app .app-shell--editorial .dock-footer--editorial .footer-copyright { text-align:left; }
+  /* The caption steps aside by the curl's reach at its title's row (fitted to the art's alpha): beside a
+     thumbnail it sits mid-card, where the curl is still low; under a full-width preview it stacks its title
+     over the link, so the title keeps the row the curl reaches least and the short link runs under it. */
+  #app .app-shell--editorial .ui-inspiration__caption { padding-right:max(0px,calc(var(--peel) * .2 - 40px)); }
+  @container (min-height:170px) {
+    #app .app-shell--editorial .ui-inspiration__caption {
+      flex-direction:column;justify-content:flex-start;align-items:stretch;gap:2px;padding-right:max(0px,calc(var(--peel) * .81 - 226px));
+    }
+  }
+}
+/* At 1600px the brand and the Chinese links (~102 + 171px) have 11px to spare beside each other. */
+@media (min-width: 1600px) and (max-width: 1679px) and (min-height: 800px) {
+  #app .app-shell--editorial .dock-footer--editorial .footer-right { margin-left:8px; }
+}
+/* English brand and links (~165 + 220px) only fit beside each other from 1880px; below that the links
+   keep the right column and the peel shrinks to the room right of them (its tail spans its whole width). */
+@media (min-width: 1600px) and (max-width: 1879px) and (min-height: 800px) {
+  :root:lang(en) #app .app-shell--editorial { --peel:min(400px,calc(100dvh * 2 - 1350px),calc(50vw - 708px)); }
+  :root:lang(en) #app .app-shell--editorial .dock-footer--editorial { grid-template-columns:minmax(0,1fr) var(--home-dock-width) minmax(0,1fr); }
+  :root:lang(en) #app .app-shell--editorial .dock-footer--editorial .footer-right {
+    grid-column:3;justify-self:end;align-items:flex-end;margin-left:0;margin-right:calc(var(--peel) - 16px);
+  }
+  :root:lang(en) #app .app-shell--editorial .dock-footer--editorial .footer-nav { justify-content:flex-end; }
+  :root:lang(en) #app .app-shell--editorial .dock-footer--editorial .footer-copyright { text-align:right; }
+}
+/* Below 1800px that room leaves the English peel under 192px, too small for its lettering: leave it out. */
+@media (min-width: 1600px) and (max-width: 1799px) and (min-height: 800px) {
+  :root:lang(en) #app .app-shell--editorial { --peel:0px; }
+  :root:lang(en) #app .app-shell--editorial .comic-footer-sticker { display:none; }
+  :root:lang(en) #app .app-shell--editorial .dock-footer--editorial .footer-right { margin-right:0; }
+}
+
+@media (min-width: 1024px) and (max-width: 1499px) {
+  #app .app-shell--editorial .brand-wordmark__text { font-size: 72px; }
+  #app .app-shell--editorial .app-masthead__tools { grid-template-columns: auto 232px; column-gap: 16px; }
+  #app .app-shell--editorial .masthead-tagline { font-size: 17px; }
+  #app .app-shell--editorial .masthead-meta { margin-left: 0; font-size: 12px; }
+  #app .app-shell--editorial .main-canvas--editorial .app-masthead { grid-template-columns: minmax(150px,1fr) auto minmax(140px,1fr); }
+  #app .app-shell--editorial .app-masthead .masthead-user { width: 140px; }
+}
+/* From 1280px every page has the content pages' masthead (their concepts are drawn at 1536×1024): a smaller
+   tagline and room for the avatar and account text, and from 1500px, where the corner
+   appears, the date line clear of it. */
+@media (min-width: 1280px) {
+  #app .app-shell--editorial .main-canvas--editorial .app-masthead { --masthead-account-width:160px;grid-template-columns: minmax(200px,1fr) auto minmax(200px,1.2fr); }
+  #app .app-shell--editorial .app-masthead__tools { grid-template-columns: auto 248px; column-gap: 14px; }
+  #app .app-shell--editorial .masthead-tagline { padding-inline: 12px; font-size: 19px; }
+  #app .app-shell--editorial .app-masthead .masthead-user { width: var(--masthead-account-width); max-width: 100%; gap: 9px; padding-left: 12px; }
+  #app .app-shell--editorial .masthead-meta { font-size: 13.5px; }
+}
+@media (min-width: 1500px) {
+  #app .app-shell--editorial .masthead-meta { margin-left: 188px; }
+}
+@media (min-width: 1024px) and (max-width: 1199px) {
+  #app .app-shell--editorial .brand-wordmark__text { font-size: 57px; }
+  #app .app-shell--editorial .app-masthead__tools { grid-template-columns: auto 194px; gap: 10px; }
+  #app .app-shell--editorial .masthead-tagline { font-size: 14px; }
+  #app .app-shell--editorial .dock-label { font-size: 10px; }
+  #app .app-shell--editorial .dock-auth-sep { margin: 0 4px; }
+}
+/* The English tagline needs two balanced lines inside the speech outline. */
+@media (min-width: 1024px) {
+  :root:lang(en) #app .app-shell--editorial .masthead-tagline {
+    padding-inline: 22px; font-size: 16px; line-height: 1.1; white-space: normal; text-wrap: balance;
+  }
+}
+@media (max-width: 1023px) {
+  #app .app-shell--editorial .brand-wordmark__text { font-size: 29px; }
+}
+@media (max-width: 767px) {
+  #app .app-shell--editorial .brand-wordmark__text { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #app .app-shell--editorial .brand-wordmark__text { animation: none; }
+}
+
+/* The masthead's height, for page geometry that measures the view from the viewport (the view is the shell less
+   the masthead and the measured footer's --shell-foot, 6px in reading mode). */
+#app .app-shell--editorial { --masthead-h: 110px; }
+/* Inside pages (LayoutView .app-shell--folio: every comic page but the contact scene) carry a one-line folio, as a
+   paper's inside pages run a slim head under the front page's nameplate: the small wordmark, the page's section,
+   the date line, then (past the free fourth column) the shared tools and the account, 50px tall. The stickers, the
+   tagline and the halftone stay on the homepage; the rule runs straight along the foot. */
+#app .app-shell--folio { --masthead-h: 50px; }
+#app .app-shell--folio .main-canvas--editorial > .app-content { padding-top: var(--masthead-h); }
+#app .app-shell--folio .main-canvas--editorial .app-masthead {
+  height: var(--masthead-h); padding: 0 18px 0 22px; column-gap: 0;
+  grid-template-columns: auto auto auto minmax(0, 1fr) auto auto;
+}
+#app .app-shell--folio .app-masthead::before,
+#app .app-shell--folio .app-masthead::after,
+#app .app-shell--folio .topbar-divider { display: none; }
+#app .app-shell--folio .app-masthead__tools { display: contents; }
+#app .app-shell--folio .app-masthead .brand-wordmark { grid-column: 1; grid-row: 1; }
+#app .app-shell--folio .brand-comic { width: 141px; height: 34px; }
+#app .app-shell--folio .masthead-folio {
+  grid-column: 2; grid-row: 1; display: flex; align-items: baseline; gap: 8px; margin: 0 0 0 18px; padding: 2px 0 2px 14px;
+  border-left: 2px solid var(--ink); color: var(--ink); font-size: 18px; font-style: italic; font-weight: 900; line-height: 1.2; white-space: nowrap;
+}
+#app .app-shell--folio .app-masthead .masthead-meta {
+  grid-column: 3; grid-row: 1; flex-direction: row; align-items: baseline; gap: 14px; margin: 0 0 0 22px; font-size: 13px; line-height: 1.2;
+}
+/* The page's own tools (FolioTools: its filters, switches and refresh) stand in the free fourth column against the
+   shared tools; the column is the room they get, so a page whose tools don't fit keeps them on the page. */
+#app .app-shell--folio .masthead-page-tools {
+  grid-column: 4; grid-row: 1; position: relative; display: flex; align-items: center; justify-content: flex-end;
+  min-width: 0; margin-left: 16px;
+}
+/* With the quick search (⌘K) among the shared buttons, they stand 3px apart rather than 6 and 12px off the page's
+   tools rather than 16, which gives the page's tools back most of the button's width (the X wall keeps its level). */
+#app .app-shell--folio .app-masthead__actions { grid-column: 5; grid-row: 1; gap: 3px; margin-left: 12px; }
+/* On the desktop the density switch joins them on the pages with a comfortable layout, so there they stand edge to
+   edge (each is a 32px round button around a 20px glyph: the glyphs still sit 12px apart) and 6px off the page's
+   tools. That gives back most of the switch's width: the X wall keeps its level everywhere but at 1440px in Chinese,
+   where its follow toggle trades its name for the icon. */
+@media (min-width: 1024px) {
+  #app .app-shell--folio .app-masthead__actions { gap: 0; margin-left: 6px; }
+}
+#app .app-shell--folio .app-masthead .masthead-user { grid-column: 6; grid-row: 1; width: auto; max-width: 180px; gap: 8px; margin-left: 14px; padding: 4px 0 4px 14px; }
+#app .app-shell--folio .masthead-user .user-avatar { width: 30px; height: 30px; }
+#app .app-shell--folio .masthead-user__identity { display: none; }
+
+/* Reading mode (LayoutView .app-shell--reading, useReadingMode): reading down an inside page, the dock and the footer
+   slide off the screen and the frame runs on to the screen's foot but for a 6px lime pull in the middle; scrolling
+   back up, touching the bottom edge, Escape or the pull bring them back. The frame's height is layout, so it changes
+   at once; the dock and the footer slide over it on the compositor, out on ease-in and back on the spring, the footer
+   far enough to take the peel's crest along. With no dock under it the rule runs straight, and the pull hangs from
+   it in the rule's ink. */
+#app .app-shell--folio.app-shell--reading { --shell-foot: 6px; }
+#app .app-shell--folio .dock,
+#app .app-shell--folio .dock-footer--editorial { transition: translate var(--motion-base) var(--motion-spring); }
+#app .app-shell--folio.app-shell--reading .dock { translate: 0 calc(100% + 16px); }
+#app .app-shell--folio.app-shell--reading .dock-footer--editorial { translate: 0 calc(max(100%, var(--peel, 0px) * .65) + 8px); }
+#app .app-shell--folio.app-shell--reading :is(.dock, .dock-footer--editorial) { transition: translate 200ms var(--motion-ease-in); }
+#app .app-shell--folio.app-shell--reading .comic-footer-rule :is(.comic-footer-rule__step, .comic-footer-rule__bay) { display: none; }
+#app .app-shell--folio .reading-handle {
+  position: fixed; left: 50%; bottom: 0; z-index: 100; width: 160px; height: 16px; margin: 0 0 0 -80px; padding: 0;
+  border: 0; background: transparent; cursor: pointer; visibility: hidden; opacity: 0; translate: 0 6px;
+  transition: opacity var(--motion-fast) linear, translate var(--motion-fast) var(--motion-ease-in), visibility 0s linear var(--motion-fast);
+}
+#app .app-shell--folio .reading-handle::before {
+  content: ''; position: absolute; left: 20px; right: 20px; bottom: 0; height: 6px; border-radius: 4px 4px 0 0;
+  background: var(--acid); box-shadow: inset 0 0 0 1.5px var(--rule-strong); transform-origin: 50% 100%;
+  transition: scale var(--motion-fast) var(--motion-ease-out);
+}
+#app .app-shell--folio.app-shell--reading .reading-handle {
+  visibility: visible; opacity: 1; translate: none;
+  transition: opacity var(--motion-fast) linear 120ms, translate var(--motion-base) var(--motion-spring) 120ms, visibility 0s;
+}
+#app .app-shell--folio .reading-handle:hover::before,
+#app .app-shell--folio .reading-handle:focus-visible::before { scale: 1.06 1.67; }
+#app .app-shell--folio .reading-handle:focus-visible { outline: none; }
+#app .app-shell--folio .reading-handle:focus-visible::before {
+  box-shadow: inset 0 0 0 1.5px var(--rule-strong), 0 0 0 2px var(--paper), 0 0 0 3.5px var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  #app .app-shell--folio :is(.dock, .dock-footer--editorial, .reading-handle),
+  #app .app-shell--folio .reading-handle::before { transition: none; }
+}
+
+}

@@ -1,0 +1,22 @@
+# 在仓库根目录运行：python -m pytest backend/tests
+[tool.pytest.ini_options]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["backend/app"]
+omit = ["*/__pycache__/*"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 130
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["backend"]
+combine-as-imports = true

@@ -1,0 +1,36 @@
+# 密钥与本地配置
+.env
+**/.env
+deploy/.env.production
+deploy/.env.smoke
+**/*.key
+
+# 运行数据与日志
+data/
+logs/
+backups/
+*.log
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# 前端
+**/node_modules/
+frontend/dist/
+dist/
+
+# 编辑器与工具
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.claude/
+.playwright-mcp/

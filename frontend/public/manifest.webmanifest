@@ -1,0 +1,14 @@
+{
+  "name": "房子 Houses",
+  "short_name": "房子",
+  "description": "发现更好的房源，让找房更便捷。",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#f7f5ee",
+  "background_color": "#f7f5ee",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

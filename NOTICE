@@ -1,0 +1,131 @@
+Houses (房子)
+Copyright 2026 Houses contributors
+
+Licensed under the GNU Affero General Public License, Version 3.0
+(see LICENSE).
+
+This project is a modified version of AIGCNEWS
+(https://github.com/Kaixxrua/AIGCNEWS), Copyright 2026 Kaixxrua,
+licensed under AGPL-3.0. It reuses parts of the AIGCNEWS backend core
+(configuration, PostgreSQL pool and migrations, JWT auth, Redis client)
+and frontend shell (theme, motion, i18n, PWA, dock navigation). Files
+derived from AIGCNEWS carry the note "Modified for Houses (based on
+AIGCNEWS, AGPL-3.0)" where they were changed.
+
+As required by the upstream NOTICE, Houses does not use the AIGCNEWS /
+AIGC NEWS / AIGC Radar names, logos, wordmarks, favicons, icons, comic
+illustrations, mascot, stickers, or screenshots, and is not an official
+AIGCNEWS service. The upstream notice is reproduced below unchanged.
+
+========================================================================
+Upstream NOTICE (AIGCNEWS)
+========================================================================
+
+AIGCNEWS (AIGC Radar MCP)
+Copyright 2026 Kaixxrua
+
+Licensed under the GNU Affero General Public License, Version 3.0
+(see LICENSE).
+
+========================================================================
+Brand assets and trademarks (not open source)
+========================================================================
+
+The AGPL-3.0 license covers this project's source code and
+documentation text. It does not cover the project's brand assets, which
+remain Copyright 2026 Kaixxrua, all rights reserved, and are not
+licensed under AGPL-3.0 or any other open-source license:
+
+  - the names "AIGCNEWS", "AIGC NEWS", "AIGC Radar", and
+    "AIGC Radar MCP", and the aigcnews.cn domain;
+  - logos, wordmarks, favicons, and app icons, including
+    docs/assets/logo-*.png, frontend/public/logo.png,
+    frontend/public/favicon.svg, frontend/public/favicon.ico, and
+    frontend/public/icons/;
+  - the comic illustrations, mascot, and sticker artwork in
+    frontend/public/assets/comic/;
+  - the screenshots, demo recordings, and promotional images in
+    docs/assets/.
+
+These files ship only so the reference deployment builds from this
+repository. Pursuant to section 7(e) of AGPL-3.0, no rights are granted
+under trademark law for these names and marks. If you distribute a fork,
+or offer a modified or unmodified copy to the public as a network
+service, you must replace these assets with your own, use your own
+product name, and not present your service as the official AIGCNEWS /
+AIGC Radar or imply the maintainer's endorsement. Truthful statements of
+origin such as "based on AIGCNEWS" are permitted. Local development and
+private evaluation may keep the assets unchanged. For any other use,
+ask the maintainer for permission.
+
+Bundled third-party assets — web fonts, UI components, and framework
+template files — keep their own licenses (see "Third-party software").
+
+========================================================================
+Third-party content
+========================================================================
+
+AIGCNEWS is a personal aggregation and ranking tool. Content surfaced by
+its pipelines — arXiv/Hugging Face papers, GitHub repository metadata,
+news articles, Product Hunt and Hacker News items, and X (Twitter)
+posts — remains the property of its original authors, publishers, and
+platforms. The software stores metadata, excerpts, and thumbnails solely
+to operate the reader interface and claims no ownership over aggregated
+content. No platform content, database dump, collected snapshot, or
+cached media from any deployment of this project is licensed for
+redistribution or included in this repository.
+
+The X (Twitter) read/parse/pagination implementation is part of this
+repository and is disabled by default behind a feature flag. Operators
+who enable it are responsible for complying with the source platforms'
+Terms of Service, robots policies, and applicable law, and for
+safeguarding the credentials they configure. Real cookies/tokens,
+credential database rows, collected snapshots, and media caches are not
+distributed here.
+
+The private/ directory is the maintainer's former private companion
+repository, merged with its history on 2026-10-13: the reference
+deployment's overlay (Compose file and nginx includes), an earlier copy
+of the X transport layer, and the Godot contact-page project. It is
+licensed like the rest of this repository; the brand names and logos
+listed above stay reserved wherever they appear. Hostnames, addresses,
+and service names in it describe the maintainer's own hosts and grant
+no access to them. The WeChat collection code retired on 2026-09-29 was
+removed from that history before the merge.
+
+Product names and marks referenced by this project — including X,
+Twitter, WeChat, Product Hunt, Hacker News, arXiv, GitHub, and Hugging
+Face — are the property of their respective owners. References are
+nominative only; no affiliation with or endorsement by their owners is
+implied.
+
+Removal or correction requests concerning aggregated content may be
+directed to the maintainer via the repository issue tracker.
+
+========================================================================
+Third-party software
+========================================================================
+
+This project is built with open-source components, including FastAPI,
+Starlette, Pydantic, SQLAlchemy, APScheduler, LangChain, PyMilvus,
+Neo4j drivers, Vue.js, Vite, Pinia, Vue Router, and Tailwind CSS, each
+licensed by its respective authors (predominantly MIT/Apache-2.0/BSD).
+The complete dependency lists with exact versions are maintained in
+backend/requirements.txt, backend/requirements.lock, and
+frontend/package.json.
+
+The web fonts in frontend/public/fonts/ (Bangers, DM Sans, Inter,
+Playfair Display, and ZCOOL QingKe HuangYou) are licensed under the SIL
+Open Font License, Version 1.1, by their respective authors.
+private/godot/assets/camp/ui/camp_ui_zh.ttf ("Camp UI Zh") is a renamed
+subset of Source Han Sans by Adobe, licensed under the SIL Open Font
+License, Version 1.1 (see OFL.txt in the same directory).
+frontend/src/components/dashboard/orbitalSphereRenderer.ts is adapted
+from ThreeUI by Meng To under the MIT License (see THREEUI-LICENSE in
+the same directory).
+
+The public X-ingestion transport builds upon twitter-cli, licensed under
+the Apache License, Version 2.0
+(https://github.com/jackwener/twitter-cli). Project-authored integration
+and compatibility code remains licensed under this repository's
+AGPL-3.0 license; twitter-cli retains its own upstream license.
