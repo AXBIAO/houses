@@ -7,6 +7,7 @@ import {
   BellRing,
   BookOpenCheck,
   CalendarDays,
+  LocateFixed,
   MapPinned,
   Search,
   ShieldCheck,
@@ -16,7 +17,9 @@ import FinderSearchPanel from '@/components/listing/FinderSearchPanel.vue'
 import ListingCard from '@/components/listing/ListingCard.vue'
 import ListingGridSkeleton from '@/components/listing/ListingGridSkeleton.vue'
 import { listingsApi } from '@/features/listings/api'
-import type { HomeFeed } from '@/features/listings/types'
+import { locateUser } from '@/features/listings/geo'
+import type { HomeFeed, ListingSummary, RentType } from '@/features/listings/types'
+import { showToast } from '@/composables/useToast'
 
 defineOptions({ name: 'HomeView' })
 
@@ -24,7 +27,14 @@ const { t } = useI18n()
 const feed = ref<HomeFeed | null>(null)
 const quickTags = ref<string[]>([])
 const loadError = ref(false)
+const rentType = ref<RentType | null>(null)
+const nearby = ref<ListingSummary[] | null>(null)
+const locating = ref(false)
 const previewListing = computed(() => feed.value?.recommended[0] ?? null)
+const bySelectedType = (items: ListingSummary[]) =>
+  items.filter(item => rentType.value === null || item.rentType === rentType.value).slice(0, 3)
+const recommended = computed(() => bySelectedType(feed.value?.recommended ?? []))
+const nearbyShown = computed(() => bySelectedType(nearby.value ?? []))
 
 const features = [
   { icon: Search, title: 'home.featureSearchTitle', body: 'home.featureSearchBody', to: '/listings', number: '01' },
@@ -41,6 +51,25 @@ async function load() {
     quickTags.value = facets.tags.slice(0, 8).map(f => f.value)
   } catch {
     loadError.value = true
+  }
+}
+
+async function locate() {
+  locating.value = true
+  try {
+    const here = await locateUser()
+    const result = await listingsApi.search({
+      lat: here.lat,
+      lng: here.lng,
+      radiusKm: 10,
+      sort: 'distance',
+      pageSize: 12,
+    })
+    nearby.value = result.items
+  } catch {
+    showToast(t('home.locateFailed'))
+  } finally {
+    locating.value = false
   }
 }
 
@@ -111,7 +140,7 @@ onMounted(load)
         <span class="landing-section-index">01 / {{ t('home.searchSection') }}</span>
         <span>{{ t('home.searchHint') }}</span>
       </div>
-      <FinderSearchPanel :tags="quickTags" />
+      <FinderSearchPanel :tags="quickTags" @type-change="rentType = $event" />
     </section>
 
     <section class="landing-features" aria-labelledby="features-title">
@@ -177,6 +206,54 @@ onMounted(load)
         <ListingCard v-for="item in feed.today.slice(0, 3)" :key="item.id" :listing="item" />
       </div>
       <p v-else class="listing-state">{{ t('common.empty') }}</p>
+    </section>
+
+    <section class="landing-content-block" aria-labelledby="recommended-title">
+      <div class="landing-section-head landing-section-head--compact">
+        <div>
+          <p class="landing-section-index">04 / {{ t('home.recommended') }}</p>
+          <h2 id="recommended-title">{{ t('home.recommended') }}</h2>
+        </div>
+        <RouterLink :to="{ path: '/listings', query: { recommended: 'true' } }" class="text-link">
+          {{ t('home.viewAll') }}<ArrowRight :size="16" aria-hidden="true" />
+        </RouterLink>
+      </div>
+      <ListingGridSkeleton v-if="!feed && !loadError" :count="3" />
+      <div v-else-if="recommended.length" class="listing-grid">
+        <ListingCard v-for="item in recommended" :key="item.id" :listing="item" />
+      </div>
+      <p v-else-if="feed" class="listing-state">{{ t('common.empty') }}</p>
+    </section>
+
+    <section class="landing-content-block" aria-labelledby="nearby-title">
+      <div class="landing-section-head landing-section-head--compact">
+        <div>
+          <p class="landing-section-index">05 / {{ t('home.nearby') }}</p>
+          <h2 id="nearby-title">{{ t('home.nearby') }}</h2>
+        </div>
+        <RouterLink to="/map" class="text-link">{{ t('navigation.map') }}<ArrowRight :size="16" aria-hidden="true" /></RouterLink>
+      </div>
+      <div v-if="nearbyShown.length" class="listing-grid">
+        <ListingCard v-for="item in nearbyShown" :key="item.id" :listing="item" />
+      </div>
+      <div v-else class="nearby-prompt">
+        <p>{{ nearby ? t('home.nearbyEmpty', { n: 10 }) : t('home.nearbyHint') }}</p>
+        <button type="button" class="landing-button landing-button--quiet" :disabled="locating" @click="locate">
+          <LocateFixed :size="16" aria-hidden="true" />{{ locating ? t('home.locating') : t('home.locateMe') }}
+        </button>
+      </div>
+    </section>
+
+    <section class="subscription-banner">
+      <div class="subscription-banner__icon"><BellRing :size="24" aria-hidden="true" /></div>
+      <div class="subscription-banner__copy">
+        <p class="landing-section-index">06 / {{ t('home.subscribeTitle') }}</p>
+        <h2>{{ t('home.subscribeTitle') }}</h2>
+        <p>{{ t('home.subscribeDesc') }}</p>
+      </div>
+      <RouterLink :to="{ path: '/subscriptions', query: { new: '1' } }" class="landing-button landing-button--primary">
+        {{ t('home.subscribeButton') }}<ArrowRight :size="16" aria-hidden="true" />
+      </RouterLink>
     </section>
 
   </div>
@@ -262,6 +339,19 @@ onMounted(load)
 .listing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .listing-state { display: flex; align-items: center; justify-content: space-between; min-height: 90px; padding: 18px; border: 1px dashed var(--rule-strong); color: var(--ink-secondary); font-size: 13px; }
 .listing-state button { padding: 8px 14px; border: 1px solid var(--rule-strong); border-radius: 99px; background: var(--paper-raised); color: var(--ink); font-weight: 800; cursor: pointer; }
+.landing-content-block { display: grid; gap: 18px; }
+.landing-section-head--compact { margin-bottom: 0; }
+.landing-section-head--compact .text-link { margin-bottom: 4px; }
+.nearby-prompt { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; min-height: 88px; padding: 18px 20px; border: 1.5px dashed var(--rule-strong); color: var(--ink-secondary); }
+.nearby-prompt p { margin: 0; font-size: 13px; line-height: 1.65; }
+.nearby-prompt .landing-button { min-height: 42px; }
+.nearby-prompt .landing-button:disabled { cursor: progress; opacity: .65; }
+.subscription-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; padding: clamp(20px, 4vw, 32px); border: 1.5px solid var(--rule-strong); background: var(--acid-soft); box-shadow: 4px 4px 0 var(--shadow-hard); }
+.subscription-banner__icon { display: grid; place-items: center; width: 54px; height: 54px; flex: none; border: 1.5px solid var(--rule-strong); background: var(--acid); color: var(--acid-ink); }
+.subscription-banner__copy { flex: 1; min-width: 220px; }
+.subscription-banner__copy h2 { margin: 6px 0; font-size: clamp(20px, 3vw, 28px); font-weight: 950; letter-spacing: -.03em; }
+.subscription-banner__copy > p:last-child { margin: 0; color: var(--ink-secondary); font-size: 13px; line-height: 1.6; }
+:root[data-theme='dark'] .subscription-banner { background: var(--paper-raised); }
 @media (max-width: 900px) {
   .landing-hero { grid-template-columns: minmax(0, 1fr) minmax(300px, .9fr); gap: 16px; }
   .landing-hero__title { font-size: clamp(43px, 5.4vw, 64px); }
