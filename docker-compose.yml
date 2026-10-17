@@ -49,6 +49,13 @@ services:
       UPLOAD_DIR: /data/uploads
     volumes:
       - ${UPLOADS_DIR:-uploads}:/data/uploads
+    # 首次启动要执行数据库迁移，小内存服务器上可能超过 1 分钟；给足启动宽限，避免 web 因依赖判定失败而没起来
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8020/api/health', timeout=4).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
     depends_on:
       postgres:
         condition: service_healthy
