@@ -7,6 +7,7 @@ from __future__ import annotations
 import random
 from datetime import date, timedelta
 
+from backend.app.core.media import remove_public_file
 from backend.app.core.postgres_database import postgres_database
 from backend.app.core.postgres_migrations import PostgresMigrationRunner
 
@@ -43,26 +44,49 @@ TEMPLATES = [
 ]
 
 
-def _reset(conn) -> None:
-    ids = [r["id"] for r in conn.execute("SELECT id FROM landlords WHERE name = ANY(%s)", (list(DEMO_LANDLORDS),)).fetchall()]
-    if not ids:
-        return
-    conn.execute("DELETE FROM listing_inquiries WHERE landlord_id = ANY(%s)", (ids,))
-    conn.execute("DELETE FROM listings WHERE landlord_id = ANY(%s)", (ids,))
-    conn.execute("DELETE FROM estates WHERE landlord_id = ANY(%s)", (ids,))
-    conn.execute("DELETE FROM landlords WHERE id = ANY(%s)", (ids,))
+# 按外键依赖顺序清空演示房东名下的业务数据（房东本身与成员账号保留，账号重跑后照常可用）
+RESET_STATEMENTS = (
+    "DELETE FROM payments WHERE landlord_id = ANY(%s)",
+    "DELETE FROM bill_items WHERE bill_id IN (SELECT id FROM bills WHERE landlord_id = ANY(%s))",
+    "DELETE FROM meter_readings WHERE landlord_id = ANY(%s)",
+    "DELETE FROM bills WHERE landlord_id = ANY(%s)",
+    "DELETE FROM leases WHERE landlord_id = ANY(%s)",
+    "DELETE FROM renters WHERE landlord_id = ANY(%s)",
+    "DELETE FROM fee_items WHERE landlord_id = ANY(%s)",
+    "DELETE FROM listing_inquiries WHERE landlord_id = ANY(%s)",
+    "DELETE FROM listings WHERE landlord_id = ANY(%s)",
+    "DELETE FROM estates WHERE landlord_id = ANY(%s)",
+)
+
+
+def _landlords(conn) -> list[int]:
+    """按名称查找或创建演示房东。不删除房东行，避免级联删掉已绑定的成员账号。"""
+    ids = []
+    for i, name in enumerate(DEMO_LANDLORDS):
+        row = conn.execute("SELECT id FROM landlords WHERE name = %s ORDER BY id LIMIT 1", (name,)).fetchone()
+        if row is None:
+            row = conn.execute("INSERT INTO landlords (name, contact_name, contact_phone) VALUES (%s, %s, %s) RETURNING id",
+                               (name, "管家", f"1380000{i:04d}")).fetchone()
+        ids.append(row["id"])
+    return ids
+
+
+def _reset(conn, ids: list[int]) -> list[str]:
+    """返回被删房源的图片地址，提交后再删文件。"""
+    urls = [r["url"] for r in conn.execute(
+        "SELECT i.url FROM listing_images i JOIN listings l ON l.id = i.listing_id WHERE l.landlord_id = ANY(%s)", (ids,),
+    ).fetchall()]
+    for statement in RESET_STATEMENTS:
+        conn.execute(statement, (ids,))
+    return urls
 
 
 def seed(count: int = 30, rng_seed: int = 7) -> int:
     rng = random.Random(rng_seed)
     today = date.today()
     with postgres_database.transaction() as conn:
-        _reset(conn)
-        landlord_ids = [
-            conn.execute("INSERT INTO landlords (name, contact_name, contact_phone) VALUES (%s, %s, %s) RETURNING id",
-                         (name, "管家", f"1380000{i:04d}")).fetchone()["id"]
-            for i, name in enumerate(DEMO_LANDLORDS)
-        ]
+        landlord_ids = _landlords(conn)
+        removed_images = _reset(conn, landlord_ids)
         estate_ids = [
             conn.execute(
                 "INSERT INTO estates (landlord_id, name, city, district, address, lat, lng) "
@@ -98,6 +122,8 @@ def seed(count: int = 30, rng_seed: int = 7) -> int:
                 start = today + timedelta(days=rng.randint(1, 6))
                 conn.execute("INSERT INTO listing_unavailability (listing_id, start_date, end_date, kind) VALUES (%s, %s, %s, 'booking')",
                              (listing_id, start, start + timedelta(days=3)))
+    for url in removed_images:
+        remove_public_file(url)
     return count
 
 
