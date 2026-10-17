@@ -226,33 +226,29 @@ onMounted(load)
     </section>
 
     <section class="landing-content-block" aria-labelledby="nearby-title">
-      <div class="landing-section-head landing-section-head--compact">
-        <div>
-          <p class="landing-section-index">05 / {{ t('home.nearby') }}</p>
-          <h2 id="nearby-title">{{ t('home.nearby') }}</h2>
-        </div>
-        <RouterLink to="/map" class="text-link">{{ t('navigation.map') }}<ArrowRight :size="16" aria-hidden="true" /></RouterLink>
+      <div class="landing-section-head landing-section-head--compact feature-section-head">
+        <h2 id="nearby-title"><LocateFixed :size="25" aria-hidden="true" />{{ t('home.nearby') }}</h2>
+        <RouterLink to="/map" class="feature-section-link">{{ t('navigation.map') }}</RouterLink>
       </div>
       <div v-if="nearbyShown.length" class="listing-grid">
         <ListingCard v-for="item in nearbyShown" :key="item.id" :listing="item" />
       </div>
       <div v-else class="nearby-prompt">
         <p>{{ nearby ? t('home.nearbyEmpty', { n: 10 }) : t('home.nearbyHint') }}</p>
-        <button type="button" class="landing-button landing-button--quiet" :disabled="locating" @click="locate">
-          <LocateFixed :size="16" aria-hidden="true" />{{ locating ? t('home.locating') : t('home.locateMe') }}
+        <button type="button" class="feature-pill-button" :disabled="locating" @click="locate">
+          <LocateFixed :size="18" aria-hidden="true" />{{ locating ? t('home.locating') : t('home.locateMe') }}
         </button>
       </div>
     </section>
 
     <section class="subscription-banner">
-      <div class="subscription-banner__icon"><BellRing :size="24" aria-hidden="true" /></div>
+      <div class="subscription-banner__icon"><BellRing :size="42" aria-hidden="true" /></div>
       <div class="subscription-banner__copy">
-        <p class="landing-section-index">06 / {{ t('home.subscribeTitle') }}</p>
         <h2>{{ t('home.subscribeTitle') }}</h2>
         <p>{{ t('home.subscribeDesc') }}</p>
       </div>
-      <RouterLink :to="{ path: '/subscriptions', query: { new: '1' } }" class="landing-button landing-button--primary">
-        {{ t('home.subscribeButton') }}<ArrowRight :size="16" aria-hidden="true" />
+      <RouterLink :to="{ path: '/subscriptions', query: { new: '1' } }" class="feature-pill-button feature-pill-button--primary">
+        {{ t('home.subscribeButton') }}
       </RouterLink>
     </section>
 
@@ -342,16 +338,31 @@ onMounted(load)
 .landing-content-block { display: grid; gap: 18px; }
 .landing-section-head--compact { margin-bottom: 0; }
 .landing-section-head--compact .text-link { margin-bottom: 4px; }
-.nearby-prompt { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; min-height: 88px; padding: 18px 20px; border: 1.5px dashed var(--rule-strong); color: var(--ink-secondary); }
-.nearby-prompt p { margin: 0; font-size: 13px; line-height: 1.65; }
-.nearby-prompt .landing-button { min-height: 42px; }
-.nearby-prompt .landing-button:disabled { cursor: progress; opacity: .65; }
-.subscription-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; padding: clamp(20px, 4vw, 32px); border: 1.5px solid var(--rule-strong); background: var(--acid-soft); box-shadow: 4px 4px 0 var(--shadow-hard); }
-.subscription-banner__icon { display: grid; place-items: center; width: 54px; height: 54px; flex: none; border: 1.5px solid var(--rule-strong); background: var(--acid); color: var(--acid-ink); }
+.feature-section-head { align-items: center; }
+.feature-section-head h2 { display: flex; align-items: center; gap: 13px; margin: 0; color: var(--ink); font-size: clamp(24px, 3.2vw, 34px); font-style: italic; font-weight: 950; letter-spacing: -.045em; }
+.feature-section-head h2 svg { flex: none; }
+.feature-section-link { color: #365985; font-size: 16px; font-weight: 900; text-underline-offset: 4px; }
+.nearby-prompt { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; min-height: 118px; padding: 22px 26px; border: 2px dashed var(--rule-strong); border-radius: 20px; color: #365985; }
+.nearby-prompt p { margin: 0; font-size: clamp(16px, 2vw, 24px); line-height: 1.65; }
+.feature-pill-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 60px; padding: 0 25px; border: 2px solid var(--rule-strong); border-radius: 999px; background: var(--paper-raised); color: var(--ink); text-decoration: none; font-size: 18px; font-weight: 950; white-space: nowrap; cursor: pointer; }
+.feature-pill-button:hover { transform: translateY(-1px); }
+.feature-pill-button:disabled { cursor: progress; opacity: .65; }
+.feature-pill-button--primary { min-height: 58px; padding: 0 25px; background: #b5ff00; box-shadow: 3px 3px 0 var(--shadow-hard); }
+.subscription-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; min-height: 146px; padding: 28px 32px; border: 3px solid var(--rule-strong); border-radius: 28px; background: #effbdc; box-shadow: 8px 8px 0 var(--shadow-hard); }
+.subscription-banner__icon { display: grid; place-items: center; width: 54px; flex: none; color: var(--ink); }
 .subscription-banner__copy { flex: 1; min-width: 220px; }
-.subscription-banner__copy h2 { margin: 6px 0; font-size: clamp(20px, 3vw, 28px); font-weight: 950; letter-spacing: -.03em; }
-.subscription-banner__copy > p:last-child { margin: 0; color: var(--ink-secondary); font-size: 13px; line-height: 1.6; }
-:root[data-theme='dark'] .subscription-banner { background: var(--paper-raised); }
+.subscription-banner__copy h2 { margin: 0 0 3px; font-size: clamp(22px, 2.5vw, 30px); font-weight: 950; letter-spacing: -.03em; }
+.subscription-banner__copy > p:last-child { margin: 0; color: #365985; font-size: clamp(15px, 1.8vw, 21px); line-height: 1.6; }
+@media (max-width: 680px) {
+  .nearby-prompt { min-height: auto; padding: 18px; }
+  .nearby-prompt p { flex: 1 1 100%; }
+  .subscription-banner { gap: 12px; padding: 20px; border-radius: 22px; }
+  .subscription-banner__icon { width: 38px; }
+  .subscription-banner__icon svg { width: 32px; height: 32px; }
+  .subscription-banner__copy { min-width: 0; }
+  .subscription-banner__copy > p:last-child { font-size: 14px; }
+  .subscription-banner .feature-pill-button { flex: 1 1 100%; }
+}
 @media (max-width: 900px) {
   .landing-hero { grid-template-columns: minmax(0, 1fr) minmax(300px, .9fr); gap: 16px; }
   .landing-hero__title { font-size: clamp(43px, 5.4vw, 64px); }
