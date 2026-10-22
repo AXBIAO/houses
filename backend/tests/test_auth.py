@@ -17,6 +17,7 @@ def test_health_and_site(client):
     assert client.get("/api/health").json()["status"] == "ok"
     site = client.get("/api/site").json()
     assert site["license"] == "AGPL-3.0"
+    assert site["amapKey"] == ""  # 未配置时前端退回 OpenStreetMap
 
 
 def test_migrations_applied_and_superadmin_bootstrapped(sql):

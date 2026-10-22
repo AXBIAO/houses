@@ -3,7 +3,8 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { List, LocateFixed, SlidersHorizontal } from 'lucide-vue-next'
-import LeafletMap, { type MapBounds, type MapMarker } from '@/components/map/LeafletMap.vue'
+import HouseMap from '@/components/map/HouseMap.vue'
+import type { MapBounds, MapMarker } from '@/components/map/LeafletMap.vue'
 import ListingCard from '@/components/listing/ListingCard.vue'
 import ListingFilterBar from '@/components/listing/ListingFilterBar.vue'
 import { listingsApi } from '@/features/listings/api'
@@ -15,9 +16,10 @@ import { showToast } from '@/composables/useToast'
 
 defineOptions({ name: 'MapView' })
 
-/** 没有定位时的默认视野：当前演示数据所在城市中心 */
+/** 城市列表还没取到时的默认视野；取到后以房源最多的城市为中心 */
 const DEFAULT_CENTER: [number, number] = [30.6598, 104.0657]
 const DEFAULT_ZOOM = 12
+const CITY_ZOOM = 11
 
 const { t } = useI18n()
 const route = useRoute()
@@ -34,7 +36,9 @@ const failed = ref(false)
 /** 当前选中的小区 */
 const activeEstate = ref<number | null>(null)
 const filtersOpen = ref(false)
-const mapRef = ref<InstanceType<typeof LeafletMap> | null>(null)
+const mapRef = ref<InstanceType<typeof HouseMap> | null>(null)
+const cities = computed(() => facets.value?.cities ?? [])
+const center = computed<[number, number]>(() => (cities.value[0] ? [cities.value[0].lat, cities.value[0].lng] : DEFAULT_CENTER))
 const listRef = ref<HTMLElement | null>(null)
 let controller: AbortController | null = null
 
@@ -89,6 +93,11 @@ async function select(estateId: number) {
   listRef.value?.querySelector(`[data-estate="${estateId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 }
 
+function goCity(lat: number, lng: number) {
+  activeEstate.value = null
+  mapRef.value?.flyTo(lat, lng, CITY_ZOOM)
+}
+
 async function locate() {
   try {
     const here = await locateUser()
@@ -116,11 +125,17 @@ onBeforeUnmount(() => controller?.abort())
       </div>
     </header>
 
+    <nav v-if="cities.length > 1" class="map-page__cities" :aria-label="t('map.cities')">
+      <button v-for="city in cities" :key="city.value" type="button" class="pill-btn" @click="goCity(city.lat, city.lng)">
+        {{ city.value }}<span class="map-page__city-count">{{ city.count }}</span>
+      </button>
+    </nav>
+
     <ListingFilterBar v-if="filtersOpen" :model-value="search" :facets="facets" :show-sort="false" @update:model-value="applySearch" />
 
     <div class="map-page__body">
       <div class="map-page__map">
-        <LeafletMap ref="mapRef" :center="DEFAULT_CENTER" :zoom="DEFAULT_ZOOM" :markers="markers" :active-id="activeEstate" @bounds="bounds = $event" @select="select" />
+        <HouseMap ref="mapRef" :center="center" :zoom="DEFAULT_ZOOM" :markers="markers" :active-id="activeEstate" @bounds="bounds = $event" @select="select" />
         <p class="map-page__status" aria-live="polite">
           <template v-if="loading">{{ t('common.loading') }}</template>
           <template v-else-if="failed">{{ t('common.error') }}</template>
@@ -148,6 +163,8 @@ onBeforeUnmount(() => controller?.abort())
 .map-page__actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill-btn { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--paper-raised); color: var(--ink); font-size: 14px; font-weight: 800; cursor: pointer; }
 .pill-btn[aria-expanded='true'] { background: var(--acid); color: var(--acid-ink); }
+.map-page__cities { display: flex; flex-wrap: wrap; gap: 8px; }
+.map-page__city-count { padding: 0 7px; border-radius: 999px; background: var(--paper); font-size: 12px; }
 .map-page__body { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; height: calc(100dvh - 300px); min-height: 420px; }
 .map-page__map { position: relative; border: 2px solid var(--rule-strong); border-radius: 18px; overflow: hidden; box-shadow: 4px 4px 0 var(--shadow-hard); }
 .map-page__status { position: absolute; left: 12px; top: 12px; z-index: 500; padding: 4px 12px; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--paper-raised); font-size: 13px; font-weight: 800; pointer-events: none; }

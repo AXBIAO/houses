@@ -4,7 +4,10 @@ from __future__ import annotations
 import uuid
 from datetime import date, timedelta
 
+from backend.scripts.demo_data import CITIES
 from backend.scripts.seed_demo import DEMO_LANDLORDS, seed
+
+TOTAL = sum(city.count for city in CITIES)
 
 
 def _auth(token: str) -> dict[str, str]:
@@ -12,7 +15,7 @@ def _auth(token: str) -> dict[str, str]:
 
 
 def test_reseed_keeps_member_accounts_and_clears_business_data(client, sql):
-    assert seed() == 30
+    assert seed() == TOTAL
     landlord_id = sql("SELECT id FROM landlords WHERE name = %s", (DEMO_LANDLORDS[0],))[0][0]
     email = f"demo{uuid.uuid4().hex[:6]}@example.com"
     res = client.post("/api/auth/register", json={"email": email, "username": "演示房东", "password": "Passw0rd!"})
@@ -29,13 +32,32 @@ def test_reseed_keeps_member_accounts_and_clears_business_data(client, sql):
     bill = lease.json()["bills"][0]["id"]
     assert client.post(f"/api/landlord/bills/{bill}/payments", headers=h, json={"amount": "1000", "method": "cash"}).status_code == 201
 
-    assert seed() == 30  # 重跑不因租约、账单、收款的外键而失败
-    assert sql("SELECT count(*) FROM landlords WHERE name = ANY(%s)", (list(DEMO_LANDLORDS),)) == [(2,)]
+    assert seed() == TOTAL  # 重跑不因租约、账单、收款的外键而失败
+    assert sql("SELECT count(*) FROM landlords WHERE name = ANY(%s)", (list(DEMO_LANDLORDS),)) == [(len(DEMO_LANDLORDS),)]
     assert sql("SELECT count(*) FROM listings l JOIN landlords d ON d.id = l.landlord_id WHERE d.name = ANY(%s)",
-               (list(DEMO_LANDLORDS),)) == [(30,)]
+               (list(DEMO_LANDLORDS),)) == [(TOTAL,)]
     assert sql("SELECT count(*) FROM leases WHERE landlord_id = %s", (landlord_id,)) == [(0,)]
     me = client.get("/api/landlord/me", headers=h)
     assert me.status_code == 200 and me.json()["landlordId"] == landlord_id
 
     # 收尾：演示房东不影响其他模块对公开接口的精确断言
     sql("UPDATE landlords SET status = 'disabled' WHERE name = ANY(%s)", (list(DEMO_LANDLORDS),))
+
+
+def test_seed_attaches_photos_and_sets_cover(sql, tmp_path):
+    # 只放一张封面图：用到它的模板挂 1 张，其余模板缺图时跳过
+    tiny_webp = bytes.fromhex("524946461a000000574542505650384c0d0000002f0000001007101111888888fe0700")
+    (tmp_path / "living_modern.webp").write_bytes(tiny_webp)
+    try:
+        assert seed(photo_dir=tmp_path) == TOTAL
+        rows = sql("SELECT l.cover_url, count(i.id) FROM listings l JOIN landlords d ON d.id = l.landlord_id "
+                   "LEFT JOIN listing_images i ON i.listing_id = l.id WHERE d.name = ANY(%s) GROUP BY l.id, l.cover_url",
+                   (list(DEMO_LANDLORDS),))
+        with_photo = [r for r in rows if r[1]]
+        assert with_photo and all(r[1] == 1 and r[0].startswith("/uploads/listings/") for r in with_photo)
+        assert all(r[0] is None for r in rows if not r[1])
+        cities = sql("SELECT DISTINCT e.city FROM estates e JOIN landlords d ON d.id = e.landlord_id WHERE d.name = ANY(%s)",
+                     (list(DEMO_LANDLORDS),))
+        assert {c[0] for c in cities} == {city.name for city in CITIES}
+    finally:
+        sql("UPDATE landlords SET status = 'disabled' WHERE name = ANY(%s)", (list(DEMO_LANDLORDS),))

@@ -33,5 +33,6 @@ async def health(request: Request, response: Response) -> dict[str, Any]:
 
 @router.get("/site")
 async def site() -> dict[str, Any]:
-    """前端页脚使用：AGPL-3.0 要求向网络用户提供源码链接。"""
-    return {"name": settings.app_name, "license": "AGPL-3.0", "sourceCodeUrl": settings.source_code_url}
+    """前端页脚使用：AGPL-3.0 要求向网络用户提供源码链接；amapKey 为空时前端改用 OpenStreetMap。"""
+    return {"name": settings.app_name, "license": "AGPL-3.0", "sourceCodeUrl": settings.source_code_url,
+            "amapKey": settings.amap_key}

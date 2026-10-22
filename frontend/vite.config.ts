@@ -13,6 +13,16 @@ export default defineConfig({
       '/uploads': { target: process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:8020', changeOrigin: true },
       '/robots.txt': { target: process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:8020', changeOrigin: true },
       '/sitemap.xml': { target: process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:8020', changeOrigin: true },
+      // 本地开发的高德安全密钥代理，与生产 nginx 的 /_AMapService 行为一致；密钥从环境变量 AMAP_SECURITY_CODE 读取
+      '/_AMapService': {
+        target: 'https://restapi.amap.com',
+        changeOrigin: true,
+        rewrite: path => {
+          const url = new URL(path.replace(/^\/_AMapService/, ''), 'http://x')
+          url.searchParams.set('jscode', process.env.AMAP_SECURITY_CODE ?? '')
+          return url.pathname + url.search
+        },
+      },
     },
   },
   plugins: [
@@ -24,7 +34,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//, /^\/uploads\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/uploads\//, /^\/_AMapService\//],
         clientsClaim: true,
         skipWaiting: true,
         globPatterns: ['**/*.{js,css,html,mjs,png,svg,ico,woff,woff2}'],

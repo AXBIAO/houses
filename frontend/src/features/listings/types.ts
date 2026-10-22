@@ -65,7 +65,14 @@ export interface FacetValue {
   count: number
 }
 
+export interface CityFacet extends FacetValue {
+  /** 该城市房源坐标的平均值，地图切换城市时作为中心 */
+  lat: number
+  lng: number
+}
+
 export interface Facets {
+  cities?: CityFacet[]
   districts: FacetValue[]
   tags: FacetValue[]
 }

@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ArrowLeft, CalendarX2, MapPin } from 'lucide-vue-next'
 import InquiryForm from '@/components/listing/InquiryForm.vue'
-import LeafletMap from '@/components/map/LeafletMap.vue'
+import HouseMap from '@/components/map/HouseMap.vue'
 import { listingsApi } from '@/features/listings/api'
 import { parseSearch } from '@/features/listings/searchQuery'
 import type { ListingDetail } from '@/features/listings/types'
@@ -129,7 +129,7 @@ function applyHead(l: ListingDetail) {
           <section class="detail__section">
             <h2>{{ t('detail.location') }}</h2>
             <div class="detail__map">
-              <LeafletMap :center="[listing.lat, listing.lng]" :zoom="15" :markers="[{ id: listing.id, lat: listing.lat, lng: listing.lng, label: listing.community, kind: listing.rentType }]" :active-id="listing.id" />
+              <HouseMap :center="[listing.lat, listing.lng]" :zoom="15" :markers="[{ id: listing.id, lat: listing.lat, lng: listing.lng, label: listing.community, kind: listing.rentType }]" :active-id="listing.id" />
             </div>
           </section>
         </article>

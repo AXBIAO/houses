@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     environment: str = "development"
     # AGPL-3.0 §13：通过网络提供服务时须向用户提供对应源码，页脚链接到此地址
     source_code_url: str = ""
+    # 高德地图 JS API 的 Web 端 Key（公开下发给浏览器）；安全密钥只配在 web 容器的 nginx 代理里，不经过后端
+    amap_key: str = ""
     # 浏览器直连 API 的前端来源（逗号分隔）
     cors_allowed_origins: str = "http://localhost:5180,http://127.0.0.1:5180"
 

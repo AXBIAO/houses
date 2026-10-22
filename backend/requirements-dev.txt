@@ -1,2 +1,4 @@
 -r requirements.txt
 pytest
+# backend/scripts/gen_demo_photos.py
+Pillow>=11

@@ -90,7 +90,7 @@ const zhCN = {
     submit: '提交咨询', nameRequired: '请填写称呼', phoneInvalid: '请填写 11 位手机号', dateInvalid: '退租日期必须晚于入住日期',
     sentTitle: '咨询已发送', sentDesc: '房东会尽快通过电话联系你。', privacy: '你的手机号只会提供给该房源的房东。',
   },
-  map: { groupLabel: '{price}起 · {n}套', groupMixed: '{name} · {n}套', inView: '当前区域 {n} 套房源', truncated: '当前区域 {n} 套，已显示 {shown} 套，放大地图查看更多', empty: '这个区域暂无符合条件的房源，试试拖动或缩小地图' },
+  map: { cities: '切换城市', groupLabel: '{price}起 · {n}套', groupMixed: '{name} · {n}套', inView: '当前区域 {n} 套房源', truncated: '当前区域 {n} 套，已显示 {shown} 套，放大地图查看更多', empty: '这个区域暂无符合条件的房源，试试拖动或缩小地图' },
   console: {
     tabs: { overview: '概览', listings: '房源', estates: '小区', inquiries: '咨询', members: '成员', leases: '租约', bills: '账单', settings: '设置', landlords: '房东', moderation: '房源审核', systemSettings: '系统设置' },
     status: { draft: '草稿', published: '已上架', offline: '已下架' },

@@ -69,6 +69,9 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:${WEB_PORT:-8080}:80"
+    environment:
+      # 高德 JS API 安全密钥，只在 nginx 代理里使用（Key 本身由 api 的 AMAP_KEY 下发）
+      AMAP_SECURITY_CODE: ${AMAP_SECURITY_CODE:-}
     volumes:
       - ${UPLOADS_DIR:-uploads}:/data/uploads:ro
     depends_on:

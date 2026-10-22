@@ -90,7 +90,7 @@ const enUS = {
     submit: 'Send inquiry', nameRequired: 'Please enter your name', phoneInvalid: 'Please enter an 11-digit mobile number', dateInvalid: 'Move-out must be after move-in',
     sentTitle: 'Inquiry sent', sentDesc: 'The landlord will call you shortly.', privacy: 'Your number is only shared with this landlord.',
   },
-  map: { groupLabel: 'from {price} · {n}', groupMixed: '{name} · {n}', inView: '{n} listings in this area', truncated: '{n} in this area, showing {shown}; zoom in to see more', empty: 'No matching listings here. Try moving or zooming out.' },
+  map: { cities: 'Switch city', groupLabel: 'from {price} · {n}', groupMixed: '{name} · {n}', inView: '{n} listings in this area', truncated: '{n} in this area, showing {shown}; zoom in to see more', empty: 'No matching listings here. Try moving or zooming out.' },
   console: {
     tabs: { overview: 'Overview', listings: 'Listings', estates: 'Communities', inquiries: 'Inquiries', members: 'Members', leases: 'Leases', bills: 'Bills', settings: 'Settings', landlords: 'Landlords', moderation: 'Moderation', systemSettings: 'System settings' },
     status: { draft: 'Draft', published: 'Published', offline: 'Offline' },

@@ -171,6 +171,8 @@ def test_facets(client, world):
     districts = {d["value"]: d["count"] for d in res["districts"]}
     assert districts == {"高新区": 1, "锦江区": 1, "武侯区": 1}
     assert {"value": "近地铁", "count": 2} in res["tags"]
+    assert [(c["value"], c["count"]) for c in res["cities"]] == [("成都", 3)]
+    assert isinstance(res["cities"][0]["lat"], float) and isinstance(res["cities"][0]["lng"], float)
 
 
 def test_detail(client, world):

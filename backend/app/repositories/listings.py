@@ -59,12 +59,18 @@ class ListingRepository:
                 "GROUP BY e.district ORDER BY count(*) DESC, e.district LIMIT 50",
                 base.params,
             ).fetchall()
+            # 城市按房源数排序，附带房源坐标的平均值，地图页用来切换城市视野
+            cities = conn.execute(
+                f"SELECT e.city AS value, count(*) AS count, avg(e.lat)::float AS lat, avg(e.lng)::float AS lng "
+                f"{FROM_PUBLIC} WHERE {base.where} GROUP BY e.city ORDER BY count(*) DESC, e.city LIMIT 20",
+                base.params,
+            ).fetchall()
             tags = conn.execute(
                 f"SELECT t.tag AS value, count(*) AS count {FROM_PUBLIC} CROSS JOIN LATERAL unnest(l.tags) AS t(tag) "
                 f"WHERE {base.where} GROUP BY t.tag ORDER BY count(*) DESC, t.tag LIMIT 30",
                 base.params,
             ).fetchall()
-        return {"districts": districts, "tags": tags}
+        return {"cities": cities, "districts": districts, "tags": tags}
 
     def sitemap_entries(self, limit: int) -> list[dict[str, Any]]:
         base = compile_filters(ListingFilters(), date.today())

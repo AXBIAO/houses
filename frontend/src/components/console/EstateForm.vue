@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import LeafletMap from '@/components/map/LeafletMap.vue'
+import HouseMap from '@/components/map/HouseMap.vue'
 import type { Estate, EstateInput } from '@/features/console/types'
 
 const DEFAULT_POINT = { lat: 30.6598, lng: 104.0657 }
@@ -50,7 +50,7 @@ function submit() {
         <p class="c-hint c-field--wide">{{ picked ? t('console.pickedAt', { lat: form.lat, lng: form.lng }) : t('console.pickHint') }}</p>
       </div>
       <div class="estate-form__map">
-        <LeafletMap :center="center" :zoom="13" :markers="marker" :active-id="0" @pick="pick" />
+        <HouseMap :center="center" :zoom="13" :markers="marker" :active-id="0" @pick="pick" />
       </div>
     </div>
     <p v-if="localError || errorText" class="c-error" role="alert">{{ localError || errorText }}</p>
