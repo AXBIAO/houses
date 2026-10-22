@@ -3,3 +3,10 @@
 map $host $amap_jscode {
     default "${AMAP_SECURITY_CODE}";
 }
+
+# 高德服务接口多用 JSONP（带 callback 参数），上游却返回 application/json；
+# 站点开了 nosniff，浏览器会拒绝执行，所以代理时按是否带 callback 改写类型。
+map $arg_callback $amap_content_type {
+    ""      "application/json; charset=utf-8";
+    default "application/javascript; charset=utf-8";
+}
